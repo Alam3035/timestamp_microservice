@@ -37,19 +37,21 @@ app.get('/api/timestamp/:date', (req, res) => {
   jsonResponse = {unix: 0, utc: ""}
   date = req.params.date
 
-  if (date.indexOf("-") > -1) {
-    newDate = Date.parse(date)
-  }  else {
-    newDate = date;
+  if (/\d{5,}/.test(date)) {
+    const dateInt = parseInt(date);
+    jsonResponse.unix = dateInt;
+    jsonResponse.utc = new Date(dateInt).toUTCString();
+    res.json(jsonResponse);
+  } else {
+    let dateObject = new Date(date);
+    if (dateObject.toString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      jsonResponse.unix = dateObject.valueOf();
+      jsonResponse.utc = dateObject.toUTCString();
+      res.json(jsonResponse);
+    }
   }
-
-  if (isNaN(newDate)) {
-    res.json({ error : "Invalid Date" })
-  }
-
-  jsonResponse.unix = newDate;
-  jsonResponse.utc = new Date(newDate * 1000).toUTCString()
-  res.json(jsonResponse)
 })
 
 

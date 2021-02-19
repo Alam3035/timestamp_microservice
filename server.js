@@ -40,14 +40,15 @@ app.get('/api/timestamp/:date', (req, res) => {
   if (date.indexOf("-") > -1) {
     newDate = Date.parse(date)
   }  else {
-    newDate = new Date(date);
+    newDate = date;
   }
+
   if (isNaN(newDate)) {
     res.json({ error : "Invalid Date" })
   }
 
-  jsonResponse.unix = newDate/1000;
-  jsonResponse.utc = new Date(newDate).toUTCString()
+  jsonResponse.unix = newDate;
+  jsonResponse.utc = new Date(newDate * 1000).toUTCString()
   res.json(jsonResponse)
 })
 

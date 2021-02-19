@@ -25,20 +25,23 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/timestamp/", (req, res) => {
+  jsonResponse = {unix: 0, utc: ""}
+  currentDate = new Date()
+  jsonResponse.unix = currentDate.getTime()
+  jsonResponse.utc = currentDate.toUTCString()
+  res.json(jsonResponse);
+});
 
 app.get('/api/timestamp/:date', (req, res) => {
   jsonResponse = {unix: 0, utc: ""}
   date = req.params.date
 
-  if (date == "undefined") {
-    currentDate = new Date()
-    jsonResponse.unix = currentDate.getTime()
-    jsonResponse.utc = currentDate.toUTCString()
-    res.json(jsonResponse)
-    return
+  if (date.indexOf("-") > -1) {
+    newDate = Date.parse(date)
+  }  else {
+    newDate = new Date(date);
   }
-
-  newDate = Date.parse(date)
   if (isNaN(newDate)) {
     res.json({ error : "Invalid Date" })
   }
